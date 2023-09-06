@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\front;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\front\Controller;
 use App\Models\Cart;
 use App\Models\Feedback;
 use App\Models\OOrder;
@@ -12,9 +12,12 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    public function __construct() {
+        parent::__construct();
+    }
     public function index()
     {
-        $product = Product::where('category_id', 1)->get();
+        $product = Product::where('status', 1)->get();
 
         return view('home', ['product' => $product]);
     }
@@ -25,8 +28,9 @@ class HomeController extends Controller
     }
     public function showProduct()
     {
-        $product = Product::where('category_id', 1)->get();
-        return view('front.product', ['product' => $product]);
+        $product = Product::where('status', 1)->paginate(12);
+        // dd($products->lastPage());
+        return view('front.shop', ['product' => $product]);
     }
     public function addCart($id)
     {
@@ -56,24 +60,40 @@ class HomeController extends Controller
 
         return redirect()->back()->with('success', 'Remove Product Successfully');
     }
-    public function addToCart(Request $request)
-    {
+    public function addToCartQuantity(Request $request){
         $data = $request->except('_token');
-        $quantity = Cart::where('product_id', $data['product_id'])->where('customer_id', auth()->user()->id)->where('order_id', null)->limit(1)->get('quantity');
-        // dd($quantity);
-        if (count($quantity) > 0) {
-            $quantity = $quantity[0]->quantity;
-            $quantity = $quantity + $data['quantity'];
-            Cart::where('product_id', $data['product_id'])->where('customer_id', auth()->user()->id)->update(['quantity' => $quantity]);
-        } else {
-            // dd('as');
+        if($data['quantity']>0){
+
             Cart::create([
                 'product_id' => $data['product_id'],
                 'customer_id' => auth()->user()->id,
-                'quantity' => 1,
+                'quantity' => $data['quantity'],
 
             ]);
+            return redirect()->back()->with('success', 'Add to Cart Successfully');
+        }else{
+            return redirect()->back()->with('error',"Enter some quantity before adding");
         }
+
+    }
+    public function addToCart(Request $request)
+    {
+        $data = $request->except('_token');
+        // $quantity = Cart::find($data['card_id'])->quantity;
+        // // dd($quantity);
+        // if ($quantity > 0) {
+        //     // $quantity = $quantity[0]->quantity;
+        //     $quantity = $quantity + $data['quantity'];
+            Cart::find($data['card_id'])->update(['quantity' => $data['quantity']]);
+        // } else {
+        //     // dd('as');
+        //     Cart::create([
+        //         'product_id' => $data['product_id'],
+        //         'customer_id' => auth()->user()->id,
+        //         'quantity' => 1,
+
+        //     ]);
+        // }
         return redirect()->back()->with('success', 'Cart Update Successfully');
     }
     public function showCart()
@@ -89,7 +109,8 @@ class HomeController extends Controller
     public function productDetail($id)
     {
         $product = Product::findOrFail($id);
-        return view('front.productDetail', ['product' => $product]);
+        $detail=Product::where('category_id',$product->category_id)->where('id','!=',$id)->get();
+        return view('front.productDetail', ['product' => $product,'detail'=>$detail]);
     }
     public function updateQuantity(Request $request)
     {
@@ -117,8 +138,7 @@ class HomeController extends Controller
         Cart::where('customer_id', auth()->user()->id)->where("order_id", null)->update(['order_id' => $order_id]);
         OOrder::create(['order_id' => $order_id, 'customer_id' => auth()->user()->id]);
         $order = Cart::where('customer_id', auth()->user()->id)->where("order_id", '!=', null)->get();
-        echo view('front.order', ['order' => $order]);
-//        return ->with('success', 'Order Placed Successfully');
+        return redirect()->route('front.order.show')->with('success', 'Order Placed Successfully');
     }
     public function showOrder()
     {

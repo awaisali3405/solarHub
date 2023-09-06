@@ -1,345 +1,150 @@
-<style>
-    @import url(https://fonts.googleapis.com/css?family=Oswald:400,300);
-    @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+<header id="header">
+    <!--header-->
+    {{-- <div class="header_top">
+        <!--header_top-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="contactinfo">
+                        <ul class="nav nav-pills">
+                            <li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
+                            <li><a href="#"><i class="fa fa-envelope"></i> info@domain.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="social-icons pull-right">
+                        <ul class="nav navbar-nav">
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                            <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+    <!--/header_top-->
 
-    body {
-        font-family: 'Open Sans', sans-serif;
-    }
+    <div class="header-middle">
+        <!--header-middle-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="logo pull-left">
+                        <a href="{{ route('front.home') }}"><img width="139" height="39"
+                                src="{{ asset('images/home/logo.png') }}" alt=""></a>
+                    </div>
+                    {{-- <div class="btn-group pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
+                                USA
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Canada</a></li>
+                                <li><a href="#">UK</a></li>
+                            </ul>
+                        </div>
 
-    .popup-box {
-        background-color: #ffffff;
-        border: 1px solid #b0b0b0;
-        bottom: 0;
-        display: none;
-        height: 415px;
-        position: fixed;
-        right: 70px;
-        width: 300px;
-        font-family: 'Open Sans', sans-serif;
-    }
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
+                                DOLLAR
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Canadian Dollar</a></li>
+                                <li><a href="#">Pound</a></li>
+                            </ul>
+                        </div>
+                    </div> --}}
+                </div>
+                <div class="col-sm-8">
+                    <div class="shop-menu pull-right">
+                        <ul class="nav navbar-nav">
+                            @if (Auth::check())
+                                <li><a href="#"><i class="fa fa-user"></i> Account</a>
+                                </li>
+                                <li><a href="{{ route('front.order.show') }}">Order</a>
+                                <li><a href="">Checkout</a>
+                                </li>
+                                <li><a href="{{ route('front.cart.show') }}">Cart <span
+                                            class="badge badge-pill">{{ auth()->user()->cart->count() }}</span></a></li>
+                                <li>
 
-    .round.hollow {
-        margin: 40px 0 0;
-    }
+                                    <a href="#" onclick="$('#logout').submit()"><span
+                                            class="fas fa-sign-out-alt spa"></span>Logout</a>
+                                    <form action="{{ route('logout') }}" method="POST" id="logout">@csrf
+                                    </form>
+                                </li>
+                            @else
+                                <li><a href="{{ route('login') }}">Login</a></li>
+                            @endif
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/header-middle-->
 
-    .round.hollow a {
-        border: 2px solid #ff6701;
-        border-radius: 35px;
-        color: red;
-        color: #ff6701;
-        font-size: 23px;
-        padding: 10px 21px;
-        text-decoration: none;
-        font-family: 'Open Sans', sans-serif;
-    }
+    <div class="header-bottom">
+        <!--header-bottom-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <div class="mainmenu pull-left">
+                        <ul class="nav navbar-nav collapse navbar-collapse">
+                            <li><a href="{{ route('front.home') }}" class="active">Home</a></li>
+                            <li class="dropdown"><a href="#">Shop<i class="fa fa-angle-down"></i></a>
+                                <ul role="menu" class="sub-menu">
 
-    .round.hollow a:hover {
-        border: 2px solid #000;
-        border-radius: 35px;
-        color: red;
-        color: #000;
-        font-size: 23px;
-        padding: 10px 21px;
-        text-decoration: none;
-    }
-
-    .popup-box-on {
-        display: block !important;
-    }
-
-    .popup-box .popup-head {
-        background-color: #fff;
-        clear: both;
-        color: #7b7b7b;
-        display: inline-table;
-        font-size: 21px;
-        padding: 7px 10px;
-        width: 100%;
-        font-family: Oswald;
-    }
-
-    .bg_none i {
-        border: 1px solid #ff6701;
-        border-radius: 25px;
-        color: #ff6701;
-        font-size: 17px;
-        height: 33px;
-        line-height: 30px;
-        width: 33px;
-    }
-
-    .bg_none:hover i {
-        border: 1px solid #000;
-        border-radius: 25px;
-        color: #000;
-        font-size: 17px;
-        height: 33px;
-        line-height: 30px;
-        width: 33px;
-    }
-
-    .bg_none {
-        background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
-        border: medium none;
-    }
-
-    .popup-box .popup-head .popup-head-right {
-        margin: 11px 7px 0;
-    }
-
-    .popup-box .popup-messages {}
-
-    .popup-head-left img {
-        border: 1px solid #7b7b7b;
-        border-radius: 50%;
-        width: 44px;
-    }
-
-    .popup-messages-footer>textarea {
-        border-bottom: 1px solid #b2b2b2 !important;
-        height: 34px !important;
-        margin: 7px;
-        padding: 5px !important;
-        border: medium none;
-        width: 95% !important;
-    }
-
-    .popup-messages-footer {
-        background: #fff none repeat scroll 0 0;
-        bottom: 0;
-        position: absolute;
-        width: 100%;
-    }
-
-    .popup-messages-footer .btn-footer {
-        overflow: hidden;
-        padding: 2px 5px 10px 6px;
-        width: 100%;
-    }
-
-    .simple_round {
-        background: #d1d1d1 none repeat scroll 0 0;
-        border-radius: 50%;
-        color: #4b4b4b !important;
-        height: 21px;
-        padding: 0 0 0 1px;
-        width: 21px;
-    }
-
-
-
-
-
-    .popup-box .popup-messages {
-        background: #3f9684 none repeat scroll 0 0;
-        height: 275px;
-        overflow: auto;
-    }
-
-    .direct-chat-messages {
-        overflow: auto;
-        padding: 10px;
-        transform: translate(0px, 0px);
-
-    }
-
-    .popup-messages .chat-box-single-line {
-        border-bottom: 1px solid #a4c6b5;
-        height: 12px;
-        margin: 7px 0 20px;
-        position: relative;
-        text-align: center;
-    }
-
-    .popup-messages abbr.timestamp {
-        background: #3f9684 none repeat scroll 0 0;
-        color: #fff;
-        padding: 0 11px;
-    }
-
-    .popup-head-right .btn-group {
-        display: inline-flex;
-        margin: 0 8px 0 0;
-        vertical-align: top !important;
-    }
-
-    .chat-header-button {
-        background: transparent none repeat scroll 0 0;
-        border: 1px solid #636364;
-        border-radius: 50%;
-        font-size: 14px;
-        height: 30px;
-        width: 30px;
-    }
-
-    .popup-head-right .btn-group .dropdown-menu {
-        border: medium none;
-        min-width: 122px;
-        padding: 0;
-    }
-
-    .popup-head-right .btn-group .dropdown-menu li a {
-        font-size: 12px;
-        padding: 3px 10px;
-        color: #303030;
-    }
-
-    .popup-messages abbr.timestamp {
-        background: #3f9684 none repeat scroll 0 0;
-        color: #fff;
-        padding: 0 11px;
-    }
-
-    .popup-messages .chat-box-single-line {
-        border-bottom: 1px solid #a4c6b5;
-        height: 12px;
-        margin: 7px 0 20px;
-        position: relative;
-        text-align: center;
-    }
-
-    .popup-messages .direct-chat-messages {
-        height: auto;
-    }
-
-    .popup-messages .direct-chat-text {
-        background: #dfece7 none repeat scroll 0 0;
-        border: 1px solid #dfece7;
-        border-radius: 2px;
-        color: #1f2121;
-    }
-
-    .popup-messages .direct-chat-timestamp {
-        color: #fff;
-        opacity: 0.6;
-    }
-
-    .popup-messages .direct-chat-name {
-        font-size: 15px;
-        font-weight: 600;
-        margin: 0 0 0 49px !important;
-        color: #fff;
-        opacity: 0.9;
-    }
-
-    .popup-messages .direct-chat-info {
-        display: block;
-        font-size: 12px;
-        margin-bottom: 0;
-    }
-
-    .popup-messages .big-round {
-        margin: -9px 0 0 !important;
-    }
-
-    .popup-messages .direct-chat-img {
-        border: 1px solid #fff;
-        background: #3f9684 none repeat scroll 0 0;
-        border-radius: 50%;
-        float: left;
-        height: 40px;
-        margin: -21px 0 0;
-        width: 40px;
-    }
-
-    .direct-chat-reply-name {
-        color: #fff;
-        font-size: 15px;
-        margin: 0 0 0 10px;
-        opacity: 0.9;
-    }
-
-    .direct-chat-img-reply-small {
-        border: 1px solid #fff;
-        border-radius: 50%;
-        float: left;
-        height: 20px;
-        margin: 0 8px;
-        width: 20px;
-        background: #3f9684;
-    }
-
-    .popup-messages .direct-chat-msg {
-        margin-bottom: 10px;
-        position: relative;
-    }
-
-    .popup-messages .doted-border::after {
-        background: transparent none repeat scroll 0 0 !important;
-        border-right: 2px dotted #fff !important;
-        bottom: 0;
-        content: "";
-        left: 17px;
-        margin: 0;
-        position: absolute;
-        top: 0;
-        width: 2px;
-        display: inline;
-        z-index: -2;
-    }
-
-    .popup-messages .direct-chat-msg::after {
-        background: #fff none repeat scroll 0 0;
-        border-right: medium none;
-        bottom: 0;
-        content: "";
-        left: 17px;
-        margin: 0;
-        position: absolute;
-        top: 0;
-        width: 2px;
-        display: inline;
-        z-index: -2;
-    }
-
-    .direct-chat-text::after,
-    .direct-chat-text::before {
-
-        border-color: transparent #dfece7 transparent transparent;
-
-    }
-
-    .direct-chat-text::after,
-    .direct-chat-text::before {
-        -moz-border-bottom-colors: none;
-        -moz-border-left-colors: none;
-        -moz-border-right-colors: none;
-        -moz-border-top-colors: none;
-        border-color: transparent #d2d6de transparent transparent;
-        border-image: none;
-        border-style: solid;
-        border-width: medium;
-        content: " ";
-        height: 0;
-        pointer-events: none;
-        position: absolute;
-        right: 100%;
-        top: 15px;
-        width: 0;
-    }
-
-    .direct-chat-text::after {
-        border-width: 5px;
-        margin-top: -5px;
-    }
-
-    .popup-messages .direct-chat-text {
-        background: #dfece7 none repeat scroll 0 0;
-        border: 1px solid #dfece7;
-        border-radius: 2px;
-        color: #1f2121;
-    }
-
-    .direct-chat-text {
-        background: #d2d6de none repeat scroll 0 0;
-        border: 1px solid #d2d6de;
-        border-radius: 5px;
-        color: #444;
-        margin: 5px 0 0 50px;
-        padding: 5px 10px;
-        position: relative;
-    }
-</style>
+                                    {{-- <li><a href="{{ route('productDetail') }}">Product Details</a></li> --}}
+                                    @auth
+                                        <li><a href="{{ route('front.order.show') }}">Order</a>
+                                        </li>
+                                        <li><a href="{{ route('front.cart.show') }}">Cart</a></li>
+                                    @endauth
+                                    <li><a href="{{ route('front.product.show') }}">Products</a></li>
+                                    @if (!Auth::check())
+                                        <li><a href="{{ route('login') }}">Login</a></li>
+                                    @endif
+                                </ul>
+                            </li>
+                            {{-- <li class="dropdown"><a href="#">Blog<i class="fa fa-angle-down"></i></a>
+                                <ul role="menu" class="sub-menu">
+                                    <li><a href="blog.html">Blog List</a></li>
+                                    <li><a href="blog-single.html">Blog Single</a></li>
+                                </ul>
+                            </li> --}}
+                            {{-- <li><a href="404.html">404</a></li> --}}
+                            <li><a href="{{ route('front.contactUs') }}">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="search_box pull-right">
+                        <input type="text" placeholder="Search" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/header-bottom-->
+</header>
+<!--/header-->
+{{--
 <div class="mainmenu-area d-flex">
     @if (Auth::check())
         <div class="round hollow text-center " id="chat-button" style="position:absolute; top: 600px; right: 33px">
@@ -349,9 +154,9 @@
     @endif
     <div class="container">
 
-        <div class="row">
+        <div class="row"> --}}
 
-            {{-- <div class="navbar-header">
+{{-- <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -359,23 +164,23 @@
                     <span class="icon-bar"></span>
                 </button>
             </div> --}}
-            <div class="navbar-collapse collapse">
+{{-- <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav d-block">
                     @if (Auth::check())
                     @endif
-                    <li class="active"><a href="{{ route('front.home') }}">Home</a></li>
-                    {{-- <li><a href="single-product.html">Single product</a></li> --}}
-                    <li><a href="{{ route('front.product.show') }}">Products</a></li>
+                    <li class="active"><a href="{{ route('front.home') }}">Home</a></li> --}}
+{{-- <li><a href="single-product.html">Single product</a></li> --}}
+{{-- <li><a href="{{ route('front.product.show') }}">Products</a></li>
                     <li><a href="{{ route('front.calculate.index') }}">Calculate</a></li>
                     @if (Auth::check())
                         <li><a href="{{ route('front.cart.show') }}">Cart</a></li>
                         <li><a href="{{ route('front.order.show') }}">Order</a></li>
                     @else
                         <li><a href="{{ route('login') }}">Login && Register</a></li>
-                    @endif
-                    {{-- <li><a href="#">Category</a></li> --}}
-                    {{-- <li><a href="#">Others</a></li> --}}
-                    <li><a href="#">Contact</a></li>
+                    @endif --}}
+{{-- <li><a href="#">Category</a></li> --}}
+{{-- <li><a href="#">Others</a></li> --}}
+{{-- <li><a href="#">Contact</a></li>
                     @if (Auth::check())
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('logout') }}"
@@ -398,4 +203,4 @@
             </div>
         </div>
     </div>
-</div> <!-- End mainmenu area -->
+</div> <!-- End mainmenu area --> --}}

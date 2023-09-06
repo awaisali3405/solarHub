@@ -85,13 +85,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
                 'inventory' => InventoryController::class,
                 'contract' => ContractController::class,
                 'work' => WorkController::class,
-                'chat'=>\App\Http\Controllers\Admin\ChatController::class,
-                'accessories'=>AccessoriesController::class
+                'chat' => \App\Http\Controllers\Admin\ChatController::class,
+                'accessories' => AccessoriesController::class
             ]);
-
         }
     );
-
 });
 
 //Auth::routes(['verify' => true]);
@@ -119,33 +117,37 @@ Route::group([], function () {
 
     Route::get('/', [App\Http\Controllers\Front\HomeController::class, 'index'])->name('home');
     Route::group(
-     ['as' => 'front.'],
+        ['as' => 'front.'],
         function () {
-        Route::get('/calculate', [App\Http\Controllers\Front\CalculateController::class, 'index'])->name('calculate.index');
-        Route::post('/calculate/watt', [App\Http\Controllers\Front\CalculateController::class, 'calculateWatt'])->name('calculate.watt');
-        Route::post('/calculate/product', [App\Http\Controllers\Front\CalculateController::class, 'suggestProduct'])->name('calculate.product');
-        Route::get('product', [App\Http\Controllers\Front\HomeController::class, 'showProduct'])->name('product.show');
-        Route::get('home', [App\Http\Controllers\Front\HomeController::class, 'index'])->name('home');
+            Route::get('/calculate', [App\Http\Controllers\Front\CalculateController::class, 'index'])->name('calculate.index');
+            Route::post('/calculate/watt', [App\Http\Controllers\Front\CalculateController::class, 'calculateWatt'])->name('calculate.watt');
+            Route::post('/calculate/product', [App\Http\Controllers\Front\CalculateController::class, 'suggestProduct'])->name('calculate.product');
+            Route::get('product', [App\Http\Controllers\Front\HomeController::class, 'showProduct'])->name('product.show');
+            Route::get('home', [App\Http\Controllers\Front\HomeController::class, 'index'])->name('home');
+            Route::get('show/productDetail/{id}', [App\Http\Controllers\Front\HomeController::class, 'productDetail'])->name('product.detail');
+            Route::get('/contact-us', function () {
+                return view('front.contactUs');
+            })->name('contactUs');
             Route::group(
-               [ 'middleware' => ['auth', 'verified']],
+                ['middleware' => ['auth', 'verified']],
                 function () {
-                        Route::get('myCart', [App\Http\Controllers\Front\HomeController::class, 'showCart'])->name('cart.show');
-                        Route::get('Order', [App\Http\Controllers\Front\HomeController::class, 'showOrder'])->name('order.show');
-                        Route::get('addCart/product/{id}', [App\Http\Controllers\Front\HomeController::class, 'addCart'])->name('product.cart.add');
-                        Route::get('removeCart/product/{id}', [App\Http\Controllers\Front\HomeController::class, 'removeCart'])->name('product.cart.remove');
-                        Route::post('addCart/product', [App\Http\Controllers\Front\HomeController::class, 'addToCart'])->name('product.cart.addTo');
-                        Route::get('product/order', [App\Http\Controllers\Front\HomeController::class, 'order'])->name('product.order');
-                        Route::get('show/productDetail/{id}', [App\Http\Controllers\Front\HomeController::class, 'productDetail'])->name('product.detail');
-                        Route::post('cart/update', [App\Http\Controllers\Front\HomeController::class, 'updateQuantity'])->name('update.quantity');
-                        Route::get('feedback/{id}',[\App\Http\Controllers\Front\HomeController::class,'productFeedback'])->name('product.feedback');
-                    Route::post('send/feedback/{id}',[\App\Http\Controllers\Front\HomeController::class,'sendFeedback'])->name('feedback.send');
-                        Route::group(
-                            ['middleware' => ['password.confirm']],
-                            function () {
-                                            Route::get('paypal', [App\Http\Controllers\Front\DashboardController::class, 'testPage'])->name('paypal');
-                                        }
-                        );
-                    }
+                    Route::get('myCart', [App\Http\Controllers\Front\HomeController::class, 'showCart'])->name('cart.show');
+                    Route::get('Order', [App\Http\Controllers\Front\HomeController::class, 'showOrder'])->name('order.show');
+                    Route::get('addCart/product/{id}', [App\Http\Controllers\Front\HomeController::class, 'addCart'])->name('product.cart.add');
+                    Route::get('removeCart/product/{id}', [App\Http\Controllers\Front\HomeController::class, 'removeCart'])->name('product.cart.remove');
+                    Route::post('addCart/product', [App\Http\Controllers\Front\HomeController::class, 'addToCart'])->name('product.cart.addTo');
+                    Route::post('addCart/product', [App\Http\Controllers\Front\HomeController::class, 'addToCart'])->name('product.cart.add.quantity');
+                    Route::get('product/order', [App\Http\Controllers\Front\HomeController::class, 'order'])->name('product.order');
+                    Route::post('cart/update', [App\Http\Controllers\Front\HomeController::class, 'updateQuantity'])->name('update.quantity');
+                    Route::get('feedback/{id}', [\App\Http\Controllers\Front\HomeController::class, 'productFeedback'])->name('product.feedback');
+                    Route::post('send/feedback/{id}', [\App\Http\Controllers\Front\HomeController::class, 'sendFeedback'])->name('feedback.send');
+                    Route::group(
+                        ['middleware' => ['password.confirm']],
+                        function () {
+                            Route::get('paypal', [App\Http\Controllers\Front\DashboardController::class, 'testPage'])->name('paypal');
+                        }
+                    );
+                }
             );
         }
     );

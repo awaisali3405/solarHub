@@ -1,6 +1,96 @@
 @extends('front.layouts.app')
 @section('content')
-    <div class="single-product-area">
+    <section id="cart_items">
+        <div class="container">
+            <div class="breadcrumbs">
+                <ol class="breadcrumb">
+                    <li><a href="#">Home</a></li>
+                    <li class="active">Shopping Cart</li>
+                </ol>
+            </div>
+            <div class="table-responsive cart_info">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr class="cart_menu">
+                            <td class="image">Item</td>
+                            <td class="description"></td>
+                            <td class="price">Price</td>
+                            <td class="quantity">Quantity</td>
+                            <td class="total">Total</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (auth()->user()->cart as $value)
+                            <tr>
+                                <td class="cart_product">
+                                    <a href=""><img src="{{ $value->product->img }}" alt="" width="110"
+                                            height="110"></a>
+                                </td>
+                                <td class="cart_description">
+                                    <h4><a
+                                            href="{{ route('front.product.detail', $value->id) }}">{{ $value->product->name }}</a>
+                                    </h4>
+                                    <p> </p>
+                                </td>
+                                <td class="cart_price">
+                                    <p>Rs.{{ $value->product->sale_price }}</p>
+                                </td>
+                                <td class="cart_quantity">
+                                    <div class="cart_quantity_button">
+                                        {{-- <a class="cart_quantity_up" href=""> + </a> --}}
+                                        <form action="{{ route('front.product.cart.addTo') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="card_id" value="{{ $value->id }}">
+                                            <input class="cart_quantity_input" type="text" name="quantity"
+                                                value="{{ $value->quantity }}" autocomplete="off" size="2">
+                                            <button><i class="fa fa-pencil"></i></button>
+                                        </form>
+                                        {{-- <a class="cart_quantity_down" href=""> - </a> --}}
+                                    </div>
+                                </td>
+                                <td class="cart_total">
+                                    <p class="cart_total_price">Rs.{{ $value->quantity * $value->product->sale_price }}</p>
+                                </td>
+                                <td class="cart_delete">
+                                    <a class="cart_quantity_delete"
+                                        href="{{ route('front.product.cart.remove', $value->id) }}"><i
+                                            class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                        @endforeach
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <!--/#cart_items-->
+
+    <section id="do_action">
+        <div class="container">
+            <div class="heading">
+                <h3>What would you like to do next?</h3>
+                <p>Choose if you have a discount code or reward points you want to use or would like to estimate your
+                    delivery cost.</p>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 align-content-center">
+                    <div class="total_area">
+                        <ul>
+                            <li>Cart Sub Total <span>Rs.{{ auth()->user()->cartTotal() }}</span></li>
+                            <li>Shipping Cost <span>Free</span></li>
+                            <li>Total <span>Rs.{{ auth()->user()->cartTotal() }}</span></li>
+                        </ul>
+                        <a class="btn btn-default check_out" href="{{ route('front.product.order') }}">Check Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--/#do_action-->
+    {{-- <div class="single-product-area">
         <div class="zigzag-bottom"></div>
         <div class="container">
             <div class="row">
@@ -9,7 +99,7 @@
                     <div class="product-content-right">
                         <div class="woocommerce">
                             {{-- asaas {!! __(session()->get('success')) !!} --}}
-                            <table cellspacing="0" class="shop_table cart">
+    {{-- <table cellspacing="0" class="shop_table cart">
                                 <thead>
                                     <tr>
                                         <th class="product-remove">&nbsp;</th>
@@ -20,9 +110,9 @@
                                         <th class="product-subtotal">Total</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {{-- {{ dd($cart) }} --}}
-                                    @forelse ($cart as $value)
+                                <tbody> --}}
+    {{-- {{ dd($cart) }} --}}
+    {{-- @forelse ($cart as $value)
                                         <tr class="cart_item">
                                             <td class="product-remove">
                                                 <a title="Remove this item" class="remove"
@@ -124,8 +214,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div> --}}
+    {{-- </div>
     <script
         src="https://www.paypal.com/sdk/js?client-id=AYBpDpRJqtN3ZOqZVs9ZF-aS4bD8EO8LvcN7A-_X1HkNIPXM6ADA7W_a9CfRx5jUOEuiwkkQhMSwKe7_&currency=USD">
     </script>
@@ -142,7 +232,7 @@
                 return actions.order.create({
                     purchase_units: [{
                         amount: {
-                            value: {{$total}}
+                            value: {{ $total }}
                         }
                     }]
                 });
@@ -163,8 +253,8 @@
                         url: "product/order",
                         method: 'POST',
                         data: {
-                            {{--order: {{ $order->id }}--}}
-                        },
+                            {{-- order: {{ $order->id }} --}}
+    {{-- },
                         success: function(result) {
                             console.log(result);
                             window.location = result
@@ -178,6 +268,6 @@
 
                 });
             }
-        }).render('#paypal-button-container');
-    </script>
+        }).render('#paypal-button-container'); --}}
+    {{-- </script> --}}
 @endsection

@@ -54,4 +54,18 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return [];
     }
+    public function cart(){
+        return $this->hasMany(Cart::class,'customer_id')->where('order_id',null);
+    }
+    public function cartTotal(){
+        $total=0;
+        foreach ($this->cart as $key => $value) {
+            $total+=$value->quantity* $value->product->sale_price;
+        }
+        return $total;
+    }
+    public function order(){
+        return $this->hasMany(OOrder::class,'customer_id');
+    }
+
 }

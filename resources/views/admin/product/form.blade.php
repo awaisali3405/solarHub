@@ -26,30 +26,19 @@
                                         <p class="text-danger">{{ $errors->first('name') }}</p>
                                     @endif
                                 </div>
-                                <div class="d-none">
-                                    @if (empty($product->category->id))
-                                        {{ $category_id = 0 }}
-                                    @else
-                                        {{ $category_id = $product->category->id }}
-                                    @endif
-                                    @if (empty($product->subCategory->id))
-                                        {{ $sub_category_id = 0 }}
-                                    @else
-                                        {{ $sub_category_id = $product->subCategory->id }}
-                                    @endif
-                                    @if (empty($product->unit->id))
-                                        {{ $unit_id = 0 }}
-                                    @else
-                                        {{ $unit_id = $product->unit->id }}
-                                    @endif
-                                </div>
-                                <div class="d-none">
+
+                                <div class="">
 
                                     <div class="mb-3">
-                                        <label for="value" style="margin-bottom: 10px;"></label>
+                                        <label for="value" style="margin-bottom: 10px;">Category</label>
                                         <select class="form-control" name="category_id">
-                                            <option value="1" selected></option>
-
+                                            {{-- <option value="1" selected></option> --}}
+                                            <option value="">----Select Category----</option>
+                                            @foreach ($category as $key => $value)
+                                                <option value="{{ $value->id }}"
+                                                    {{ $value->id == old('category_id', $product->category_id) ? 'selected' : '' }}>
+                                                    {{ ucfirst($value->name) }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
 
@@ -60,7 +49,7 @@
                                         <option value="">----Select Sub Category----</option>
                                         @foreach ($subCategory as $key => $value)
                                             <option value="{{ $value->id }}"
-                                                {{ $value->id == old('sub_category_id', $sub_category_id) ? 'selected' : '' }}>
+                                                {{ $value->id == old('sub_category_id', $product->sub_category_id) ? 'selected' : '' }}>
                                                 {{ ucfirst($value->name) }}</option>
                                         @endforeach
                                     </select>
@@ -69,11 +58,11 @@
 
                                 <div class="mb-3">
                                     <label for="value" style="margin-bottom: 10px;">Unit</label>
-                                    <select class="form-control" name="unit_id">
+                                    <select class="form-control" name="unit_id" required>
                                         <option value="">----Select Unit----</option>
                                         @foreach ($unit as $key => $value)
                                             <option value="{{ $value->id }}"
-                                                {{ $value->id == old('sub_category_id', $unit_id) ? 'selected' : '' }}>
+                                                {{ $value->id == old('unit_id', $product->unit_id) ? 'selected' : '' }}>
                                                 {{ ucfirst($value->unit) }}</option>
                                         @endforeach
                                     </select>

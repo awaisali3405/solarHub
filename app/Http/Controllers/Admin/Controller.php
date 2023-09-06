@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Category;
+use App\Models\SubCategory;
+use App\Models\Unit;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -21,6 +24,9 @@ class Controller extends BaseController
                 'breadcrumbs' => $this->breadcrumbs,
                 'pageTitle' => $this->pageTitle,
                 'pageHeading' => $this->pageHeading,
+                'category' => Category::where('status',1)->latest()->get(),
+                'subCategory' => SubCategory::where('status',1)->latest()->get(),
+                'unit' => Unit::where('status',1)->latest()->get(),
                 // 'role' => session()->get('ADMIN')['role'],
             ]);
         });

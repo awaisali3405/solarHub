@@ -1,107 +1,78 @@
 @extends('front.layouts.app')
 @section('content')
-    <div class="single-product-area">
-        <div class="zigzag-bottom"></div>
+    <section id="cart_items">
         <div class="container">
-            <div class="row">
-
-                <div class="col-md-12">
-                    <div class="product-content-right">
-                        <div class="woocommerce">
-
-                            <table cellspacing="0" class="shop_table cart">
-                                <thead>
-                                    <tr>
-                                        <th class="product-remove">Order #</th>
-                                        <th class="product-thumbnail">&nbsp;</th>
-                                        <th class="product-name">Products</th>
-                                        <th class="product-price">Price</th>
-                                        <th class="product-quantity">Quantity</th>
-                                        <th class="product-subtotal">Total</th>
-                                        <th class="product-subtotal">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse  ($order as $value)
-                                        <tr class="cart_item">
-                                            <td class="product-remove">
+            <div class="breadcrumbs">
+                <ol class="breadcrumb">
+                    <li><a href="/">Home</a></li>
+                    <li class="active">Order</li>
+                </ol>
+            </div>
+            <div class="table-responsive cart_info">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr class="cart_menu">
+                            <td class="image">Order #</td>
+                            <td class="image">Item</td>
+                            <td class="description">Product Name</td>
+                            <td class="price">Price</td>
+                            <td class="quantity">Quantity</td>
+                            <td class="total">Total</td>
+                            <td class="total">Status</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (auth()->user()->order as $value)
+                            {{-- @dd($value->cart) --}}
+                            @foreach ($value->cart as $key => $value2)
+                                <tr>
+                                    @if ($key == 0)
+                                        <td class="cart_price text-center" rowspan="{{ $value->cart->count() }}">
+                                            <p class="cart_total_price">
                                                 {{ $value->order_id }}
-                                            </td>
-
-                                            <td class="product-thumbnail">
-                                                <a href="single-product.html"><img width="145" height="145"
-                                                        alt="poster_1_up" class="shop_thumbnail"
-                                                        src="{{ asset($value->product->img) }}"></a>
-                                            </td>
-
-                                            <td class="product-name">
-                                                <a
-                                                    href="{{ route('front.product.detail', $value->product_id) }}">{{ $value->product->name }}</a>
-                                            </td>
-
-                                            <td class="product-price">
-                                                <span class="amount">Rs{{ $value->product->sale_price }}</span>
-                                            </td>
-
-                                            <td class="product-quantity">
-                                                <div class="quantity buttons_added">
-                                                    {{-- <form action="{{ route('front.update.quantity') }}" method="post">
-                                                        @csrf
-                                                        <input type="hidden" name="cart_id" value="{{ $value->id }}"> --}}
-                                                    {{-- <input type="button" class="minus" value="-"> --}}
-                                                    <input type="number" size="4" class="input-text qty text"
-                                                        name="quantity" title="Qty" value="{{ $value->quantity }}"
-                                                        min="0" step="1" readonly>
-                                                    {{-- <input type="button" class="plus" value="+">
-                                                        <button type="submit">update</button> --}}
-
-                                                    {{-- </form> --}}
-                                                </div>
-                                            </td>
-
-                                            <td class="product-subtotal">
-                                                <span
-                                                    class="amount">Rs{{ $value->product->sale_price * $value->quantity }}</span>
-                                            </td>
-                                            <td class="product-subtotal">
-                                                @if($value->status_id==9)
-                                                <span class="amount">Pending</span>
-                                                @elseif($value->feedback!=-1)
-                                                    @for($i=0;$i<$value->feedback;$i++)
-                                                        <i class="fa-solid fas fa-star"> </i>
-                                                    @endfor
-                                                @elseif($value->status_id==10)
-                                                    <span class="amount">Completed</span>
-                                                    <a class="btn btn-secondary" href="{{route('front.product.feedback',$value->id)}}" >Feedback</a>
-                                                @else
-
-                                                    <span class="amount">In Process</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td>No Order </td>
-                                        </tr>
-                                    @endforelse
-                                    {{-- <tr>
-                                        <td class="actions" colspan="6">
-
-
-                                            <a
-                                                class="btn btn-primary w-25 checkout-button button alt wc-forward">CheckOut</a>
+                                            </p>
                                         </td>
-                                    </tr> --}}
-                                </tbody>
-                            </table>
+                                    @endif
+                                    <td class="cart_product">
+                                        <a href="{{ route('front.product.detail', $value2->product_id) }}"><img
+                                                src="{{ $value2->product->img }}" alt="" width="50"
+                                                height="50"></a>
+                                    </td>
+                                    <td class="cart_price">
+                                        <p>
+                                        <h4><a
+                                                href="{{ route('front.product.detail', $value2->product_id) }}">{{ $value2->product->name }}</a>
+                                        </h4>
+                                        </p>
+                                    </td>
+                                    <td class="cart_price">
+                                        <p class="cart_total_price">Rs.{{ $value2->product->sale_price }}</p>
+                                    </td>
+                                    <td class="cart_quantity">
+                                        <p>{{ $value2->quantity }}</p>
+                                    <td class="cart_total">
+                                        <p class="cart_total_price">
+                                            Rs.{{ $value2->quantity * $value2->product->sale_price }}
+                                        </p>
+                                    </td>
+                                    <td class="cart_delete">
+                                        <p class="cart_total_price">
+                                            {{ $value2->status->name }}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        {{-- {{ $ }} --}}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endforeach
 
 
-
-                        </div>
-                    </div>
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
-
+    </section>
+    <!--/#cart_items-->
 @endsection

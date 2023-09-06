@@ -98,9 +98,7 @@ class ProductController extends Controller
         try {
             return view('admin.product.form', [
                 'product' => $this->productRepository->get($id),
-                'category' => Category::all(),
-                'subCategory' => SubCategory::all(),
-                'unit' => Unit::all(),
+               
                 'action' => route('admin.product.update', $id),
             ]);
         } catch (Exception $exception) {
