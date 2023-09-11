@@ -37,6 +37,7 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet"> --}}
 
+    <script src="{{ asset('js/jquery.js') }}"></script>
 </head>
 
 <body>
@@ -50,7 +51,6 @@
         @include('front.common.footer')
         <!-- -------FOOTER END------- -->
     </div>
-    <script src="{{ asset('js/jquery.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/jquery.scrollUp.min.js') }}"></script>
     <script src="{{ asset('js/price-range.js') }}"></script>

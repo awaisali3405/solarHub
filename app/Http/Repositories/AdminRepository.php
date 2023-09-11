@@ -2,27 +2,29 @@
 
 namespace App\Http\Repositories;
 
-use App\Http\Interfaces\SubCategoryRepositoryInterface;
 use App\Http\Repositories\BaseRepository\Repository;
-use App\Models\SubCategory;
 use Exception;
-
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
+use App\Models\Admin;
 use stdClass;
 
-class SubCategoryRepository extends Repository
+class AdminRepository extends Repository
 {
     public function __construct()
     {
-        $this->model = new SubCategory();
+        $this->model = new Admin();
     }
 
-    public function get($id): SubCategory
+    public function get($id): Admin
     {
         try {
             if ($id == 0) {
-                $SubCategory = $this->getModel();
-
-                return $SubCategory;
+                $Admin = $this->getModel();
+                $Admin->guard_name = '';
+                return $Admin;
             } else {
                 return $this->getModel()->findOrFail($id);
             }
@@ -34,7 +36,7 @@ class SubCategoryRepository extends Repository
     public function all()
     {
         try {
-            return SubCategory::all();
+            return Admin::where('id','!=',1)->get();
         } catch (Exception $exception) {
             throw new Exception($exception->getMessage());
         }
@@ -45,7 +47,7 @@ class SubCategoryRepository extends Repository
         try {
             return $this->getModel()->updateOrCreate(['id' => $id], $data);
         } catch (Exception $exception) {
-            throw new Exception($exception->getMessage());
+            return throw new Exception($exception->getMessage());
         }
     }
 

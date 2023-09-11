@@ -93,6 +93,12 @@
                 <span class="menu-title">Supplier</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.seller.index') }}">
+                <i class="mdi mdi-human-greeting menu-icon"></i>
+                <span class="menu-title">Seller</span>
+            </a>
+        </li>
         {{-- <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.customer.index') }}">
                 <i class="mdi mdi-human-male menu-icon"></i>

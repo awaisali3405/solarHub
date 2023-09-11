@@ -68,11 +68,11 @@ class PurchaseController extends Controller
      */
     public function show($id)
     {
-        
+
             $this->purchaseRepository->destroy($id);
             $data = "purchase deleted successfully.";
             return redirect(route('admin.purchase.index'))->with('success',$data);
-       
+
     }
 
     /**
@@ -89,7 +89,7 @@ class PurchaseController extends Controller
             return view('admin.purchase.form', [
                 'purchase' => $this->purchaseRepository->get($id),
                 'supplier' => Supplier::all(),
-                'product' => Product::where('category_id', 2)->get(),
+                'product' => Product::all(),
                 'action' => route('admin.purchase.update', $id),
             ]);
         } catch (Exception $exception) {
@@ -143,7 +143,7 @@ class PurchaseController extends Controller
      */
     public function destroy($id)
     {
-       
+
     }
 
     private function all(): string

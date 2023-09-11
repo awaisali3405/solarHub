@@ -22,8 +22,14 @@ class Admin extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'business_name',
         'email',
+        'cnic',
         'password',
+        'city_id',
+        'status',
+        'address',
+        'phone_no'
     ];
 
     /**
@@ -65,5 +71,11 @@ class Admin extends Authenticatable implements MustVerifyEmail
     public function getJWTCustomClaims(): array
     {
         return [];
+    }
+    public function city(){
+        return $this->belongsTo(City::class,'city_id');
+    }
+    public function products(){
+        return $this->hasMany(Product::class,'created_by');
     }
 }

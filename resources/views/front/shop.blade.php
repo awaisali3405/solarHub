@@ -25,6 +25,9 @@
                                                 @if (count($value->subCategory) > 0)
                                                     <span class="badge pull-right"><i class="fa fa-plus"></i></span>
                                                 @endif
+                                            </a>
+                                            <a href="{{ route('front.category.product', $value->id) }}">
+
                                                 {{ $value->name }}
                                             </a>
                                         </h4>
@@ -33,7 +36,8 @@
                                         <div class="panel-body">
                                             <ul>
                                                 @foreach ($value->subCategory as $value2)
-                                                    <li><a href="">{{ $value2->name }} </a></li>
+                                                    <li><a href="{{ route('front.subCategory.product', $value2->id) }}">{{ $value2->name }}
+                                                        </a></li>
                                                 @endforeach
 
                                             </ul>

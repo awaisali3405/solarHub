@@ -51,6 +51,7 @@
                                     </td>
                                     <td class="cart_quantity">
                                         <p>{{ $value2->quantity }}</p>
+                                    </td>
                                     <td class="cart_total">
                                         <p class="cart_total_price">
                                             Rs.{{ $value2->quantity * $value2->product->sale_price }}
@@ -58,7 +59,16 @@
                                     </td>
                                     <td class="cart_delete">
                                         <p class="cart_total_price">
-                                            {{ $value2->status->name }}
+                                            @if ($value2->status_id == 5)
+                                                <a href="{{ route('front.product.feedback', $value2->id) }}">
+                                                    Give Feedback</a>
+                                            @elseif($value2->status_id == 6)
+                                                @for ($i = 0; $i < $value2->feedback->rating; $i++)
+                                                    ⭐
+                                                @endfor
+                                            @else
+                                                {{ $value2->status->name }}
+                                            @endif
                                         </p>
                                     </td>
                                     <td>

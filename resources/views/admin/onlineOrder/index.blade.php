@@ -7,10 +7,13 @@
             <div class="card">
                 <div class="card-body">
                     @include('admin.common.breadcrumbs')
-                    <a href="{{ route('admin.onlineOrder.show', 1) }}"><button class="btn btn-success"> Pending({{$pending}})</button></a>
-                    <a href="{{ route('admin.onlineOrder.show', 2) }}"><button class="btn btn-success">In Process({{$inProcess}})</button></a>
-                    <a href="{{ route('admin.onlineOrder.show', 3) }}"><button class="btn btn-success">Completed({{$completed}})</button></a>
-                            <div class="table-responsive">
+                    <a href="{{ route('admin.onlineOrder.show', 1) }}"><button class="btn btn-success">
+                            Pending({{ $pending }})</button></a>
+                    <a href="{{ route('admin.onlineOrder.show', 2) }}"><button class="btn btn-success">In
+                            Process({{ $inProcess }})</button></a>
+                    <a href="{{ route('admin.onlineOrder.show', 5) }}"><button
+                            class="btn btn-success">Completed({{ $completed }})</button></a>
+                    <div class="table-responsive">
                         <table id="dataTable" class="table table-hover">
                             <thead>
                                 <tr>

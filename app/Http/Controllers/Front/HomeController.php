@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\front;
 
 use App\Http\Controllers\front\Controller;
+use App\Models\Admin;
 use App\Models\Cart;
 use App\Models\Feedback;
 use App\Models\OOrder;
 use App\Models\Product;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -17,9 +20,21 @@ class HomeController extends Controller
     }
     public function index()
     {
-        $product = Product::where('status', 1)->get();
+        if(Auth::check()){
+               $admin=Admin::where('city_id',auth()->user()->city_id)->first();
+                $product=collect();
+               if($admin){
 
-        return view('home', ['product' => $product]);
+               $product=$admin->products;
+            }
+            $rec= $this->getRec();
+        }else{
+            $product = Product::where('status', 1)->get();
+            $rec=collect();
+        }
+        // dd($product);
+
+        return view('home', ['product' => $product,'rec'=>$rec]);
     }
 
     public function testPage()
@@ -31,6 +46,14 @@ class HomeController extends Controller
         $product = Product::where('status', 1)->paginate(12);
         // dd($products->lastPage());
         return view('front.shop', ['product' => $product]);
+    }
+    public function categoryProduct($id){
+        $product=Product::where('category_id',$id)->where('status',1)->latest()->paginate(12);
+        return view('front.shop',['product'=>$product]);
+    }
+    public function subCategoryProduct($id){
+        $product=Product::where('sub_category_id',$id)->where('status',1)->latest()->paginate(12);
+        return view('front.shop',['product'=>$product]);
     }
     public function addCart($id)
     {
@@ -74,6 +97,28 @@ class HomeController extends Controller
         }else{
             return redirect()->back()->with('error',"Enter some quantity before adding");
         }
+
+    }
+    public function suggestAddToCart(Request $request){
+        foreach($request->product as $key=> $value){
+            $quantity = Cart::where('product_id', $value)->where('customer_id', auth()->user()->id)->where('order_id', null)->first('quantity');
+            // dd($quantity);
+            if ($quantity) {
+                $quantity = $quantity->quantity;
+                $quantity=$request->quantity[$key];
+                Cart::where('product_id', $value)->where('customer_id', auth()->user()->id)->update(['quantity' => $quantity]);
+    
+            } else {
+    
+                Cart::create([
+                    'product_id' => $value,
+                    'customer_id' => auth()->user()->id,
+                    'quantity' => $request->quantity[$key],
+    
+                ]);
+            }
+        }
+        return redirect()->back()->with('success', 'Add to Cart Successfully');
 
     }
     public function addToCart(Request $request)
@@ -184,7 +229,7 @@ class HomeController extends Controller
          return view('front.feedback',['id'=>$id,'cart'=>$cart]);
     }
     public function sendFeedback(Request $request, $id){
-//        dd($request);
+    //    dd($request);
 
         Feedback::create([
             'rating'=>$request->rating,
@@ -193,8 +238,110 @@ class HomeController extends Controller
             'product_id'=>$request->product_id,
             'user_id'=>auth()->user()->id
         ]);
-        Cart::where('id',$id)->update(['feedback'=>$request->rating]);
+        // Cart::where('id',$id)->update(['feedback'=>$request->rating]);
         return redirect(route('front.order.show'))->with('success',"Feedback submitted Successfully");
+    }
+    private function getRec()
+    {
+        $id = auth()->user()->id;
+        $rattings = Feedback::all();
+        $matrix = [];
+        $products = [];
+        foreach ($rattings as $key => $value) {
+            if (array_key_exists($value->order->customer_id, $matrix)) {
+                if (array_key_exists($value->order->product->id, $matrix[$value->order->customer_id])) {
+                    if ($matrix[$value->order->customer_id][$value->order->product->id] < $value->ratting) {
+                        $matrix[$value->order->customer_id][$value->order->product->id] = $value->ratting;
+                    }
+                } else {
+                    $matrix[$value->order->customer_id][$value->order->product->id] = $value->ratting;
+                }
+            } else {
+                // dd($value->order->product);
+                $matrix[$value->order->customer_id][$value->order->product->id] = $value->ratting;
+            }
+        }
+    //    dd($rattings,$matrix);
+        // dd($matrix);
+        if (array_key_exists($id, $matrix)) {
+            $products = $this->getRecomendation($matrix, $id);
+            // dd($products);
+        }
+        if (count($products) == 0) {
+            $products = Product::latest()->limit(9)->get();
+
+            // dd($products);
+        } else {
+
+            $p = collect();
+            $count = 0;
+            // dd($products);
+            foreach ($products as $key => $value) {
+                $px = Product::where('id', $key)->first();
+                $p->add($px);
+                $count++;
+                // dd($p);
+            }
+            // dd($p);
+            $products = $p;
+        }
+        // dd($products);
+        return $products;
+    }
+
+    private function getRecomendation($matrix, $person)
+    {
+        $total = [];
+        $simssum = [];
+        $ranks = [];
+        foreach ($matrix as $otherPerson => $value) {
+            // dd($value);
+            if ($otherPerson != $person) {
+                $sim = $this->similarity($matrix, $person, $otherPerson);
+                foreach ($matrix[$otherPerson] as $key => $val) {
+
+                    if (!array_key_exists($key, $matrix[$person])) {
+                        if (!array_key_exists($key, $total)) {
+                            $total[$key] = 0;
+                        }
+                        $total[$key] += $matrix[$otherPerson][$key] * $sim;
+                        if (!array_key_exists($key, $simssum)) {
+                            $simssum[$key] = 0;
+                        }
+                        $simssum[$key] += $sim;
+                    }
+                }
+            }
+        }
+        // dd($total);
+        foreach ($total as $key => $value) {
+
+            $ranks[$key] = $value / $simssum[$key];
+        }
+        // array_multisort($ranks, SORT_DESC);
+        // dd($ranks);
+        return $ranks;
+    }
+
+    private function similarity($matrix, $person1, $person2)
+    {
+        $similar = array();
+        $sum = 0;
+        foreach ($matrix[$person1] as $key => $value) {
+            if (array_key_exists($key, $matrix[$person2])) {
+                $similar[$key] = 1;
+            }
+        }
+        if ($similar == 0) {
+            return 0;
+        }
+        foreach ($matrix[$person1] as $key => $value) {
+            if (array_key_exists($key, $matrix[$person2])) {
+                $sum = $sum + pow($value - $matrix[$person2][$key], 2);
+            }
+        }
+        return 1 / (1 + sqrt($sum));
+
     }
 
 }

@@ -88,6 +88,9 @@
                                                 @if (count($value->subCategory) > 0)
                                                     <span class="badge pull-right"><i class="fa fa-plus"></i></span>
                                                 @endif
+                                            </a>
+                                            <a href="{{ route('front.category.product', $value->id) }}">
+
                                                 {{ $value->name }}
                                             </a>
                                         </h4>
@@ -96,7 +99,8 @@
                                         <div class="panel-body">
                                             <ul>
                                                 @foreach ($value->subCategory as $value2)
-                                                    <li><a href="">{{ $value2->name }} </a></li>
+                                                    <li><a href="{{ route('front.subCategory.product', $value2->id) }}">{{ $value2->name }}
+                                                        </a></li>
                                                 @endforeach
 
                                             </ul>
@@ -184,118 +188,55 @@
                                                 </div>
                                             </div>
                                         </a>
-                                    @endforeach
+                                </div>
+                            @endforeach
                             @endforeach
 
 
                         </div>
                     </div>
                     <!--/category-tab-->
+                    @if (Auth::check())
+                        <div class="recommended_items">
+                            <!--recommended_items-->
+                            <h2 class="title text-center">Recommended Items</h2>
 
-                    <div class="recommended_items">
-                        <!--recommended_items-->
-                        <h2 class="title text-center">Recommended Items</h2>
+                            <div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    @foreach ($rec as $value)
+                                        <div class="item active">
 
-                        <div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
-                            <div class="carousel-inner">
-                                <div class="item active">
-                                    <div class="col-sm-4">
-                                        <div class="product-image-wrapper">
-                                            <div class="single-products">
-                                                <div class="productinfo text-center">
-                                                    <img src="images/home/recommend1.jpg" alt="" />
-                                                    <h2>Rs.1000</h2>
-                                                    <p>Solar Panel</p>
-                                                    <a href="#" class="btn btn-default add-to-cart"><i
-                                                            class="fa fa-shopping-cart"></i>Add to cart</a>
+                                            <div class="col-sm-4">
+                                                <div class="product-image-wrapper">
+                                                    <div class="single-products">
+                                                        <div class="productinfo text-center">
+                                                            <img src="{{ asset($value->img) }}" style="width: 70%;"
+                                                                alt="" />
+                                                            <h2>Rs.{{ $value->sale_price }}</h2>
+                                                            <p>{{ $value->name }}</p>
+                                                            <a href="{{ route('front.product.cart.add', $value->id) }}"
+                                                                class="btn btn-default add-to-cart"><i
+                                                                    class="fa fa-shopping-cart"></i>Add to cart</a>
+                                                        </div>
+
+                                                    </div>
                                                 </div>
-
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="product-image-wrapper">
-                                            <div class="single-products">
-                                                <div class="productinfo text-center">
-                                                    <img src="images/home/recommend2.jpg" alt="" />
-                                                    <h2>Rs.1000</h2>
-                                                    <p>Solar Panel</p>
-                                                    <a href="#" class="btn btn-default add-to-cart"><i
-                                                            class="fa fa-shopping-cart"></i>Add to cart</a>
-                                                </div>
 
-                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="product-image-wrapper">
-                                            <div class="single-products">
-                                                <div class="productinfo text-center">
-                                                    <img src="images/home/recommend3.jpg" alt="" />
-                                                    <h2>Rs.1000</h2>
-                                                    <p>Solar Panel</p>
-                                                    <a href="#" class="btn btn-default add-to-cart"><i
-                                                            class="fa fa-shopping-cart"></i>Add to cart</a>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @endforeach
                                 </div>
-                                <div class="item">
-                                    <div class="col-sm-4">
-                                        <div class="product-image-wrapper">
-                                            <div class="single-products">
-                                                <div class="productinfo text-center">
-                                                    <img src="images/home/recommend1.jpg" alt="" />
-                                                    <h2>Rs.1000</h2>
-                                                    <p>Solar Panel</p>
-                                                    <a href="#" class="btn btn-default add-to-cart"><i
-                                                            class="fa fa-shopping-cart"></i>Add to cart</a>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="product-image-wrapper">
-                                            <div class="single-products">
-                                                <div class="productinfo text-center">
-                                                    <img src="images/home/recommend2.jpg" alt="" />
-                                                    <h2>Rs.1000</h2>
-                                                    <p>Solar Panel</p>
-                                                    <a href="#" class="btn btn-default add-to-cart"><i
-                                                            class="fa fa-shopping-cart"></i>Add to cart</a>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="product-image-wrapper">
-                                            <div class="single-products">
-                                                <div class="productinfo text-center">
-                                                    <img src="images/home/recommend3.jpg" alt="" />
-                                                    <h2>Rs.1000</h2>
-                                                    <p>Solar Panel</p>
-                                                    <a href="#" class="btn btn-default add-to-cart"><i
-                                                            class="fa fa-shopping-cart"></i>Add to cart</a>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <a class="left recommended-item-control" href="#recommended-item-carousel"
+                                    data-slide="prev">
+                                    <i class="fa fa-angle-left"></i>
+                                </a>
+                                <a class="right recommended-item-control" href="#recommended-item-carousel"
+                                    data-slide="next">
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
                             </div>
-                            <a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
-                                <i class="fa fa-angle-left"></i>
-                            </a>
-                            <a class="right recommended-item-control" href="#recommended-item-carousel"
-                                data-slide="next">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
                         </div>
-                    </div>
+                    @endif
                     <!--/recommended_items-->
 
                 </div>

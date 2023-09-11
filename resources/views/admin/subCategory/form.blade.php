@@ -19,17 +19,17 @@
                                 <div class="mb-3">
                                     <label for="name" style="margin-bottom: 10px;">Name</label>
                                     <input type="text" id="name" class="form-control" name="name"
-                                        value="{{ old('name', $subCategory->name) }}" placeholder="Enter Name" required>
+                                        value="{{ old('name', $subCategorys->name) }}" placeholder="Enter Name" required>
 
                                     @if ($errors->has('name'))
                                         <p class="text-danger">{{ $errors->first('name') }}</p>
                                     @endif
                                 </div>
                                 <div class="d-none">
-                                    @if (empty($subCategory->category->id))
+                                    @if (empty($subCategorys->category->id))
                                         {{ $sub_category_id = 0 }}
                                     @else
-                                        {{ $sub_category_id = $subCategory->category->id }}
+                                        {{ $sub_category_id = $subCategorys->category->id }}
                                     @endif
                                 </div>
 
@@ -48,9 +48,9 @@
 
                                 <div class="col-12 d-flex justify-content-end">
                                     <button type="submit" class="btn btn-primary me-1 mb-1">
-                                        {{ $subCategory->id != 0 ? 'Save Changes' : 'Submit' }}
+                                        {{ $subCategorys->id != 0 ? 'Save Changes' : 'Submit' }}
                                     </button>
-                                    @if ($subCategory->id != 0)
+                                    @if ($subCategorys->id != 0)
                                         <a href="{{ route('admin.subCategory.index') }}">
                                             <button type="button" class="btn btn-light-secondary me-1 mb-1">Cancle</button>
                                         </a>

@@ -2,26 +2,23 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Repositories\ProductRepository;
-
-use App\Models\Cart;
-use App\Models\Category;
-use App\Models\SubCategory;
-use App\Models\Unit;
+use App\Http\Repositories\AdminRepository;
+use App\Models\Admin;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-class ProductController extends Controller
+class SellerController extends Controller
 {
 
-    private ProductRepository $productRepository;
-    public function __construct(ProductRepository $productRepository)
+    private AdminRepository $AdminRepository;
+    public function __construct(AdminRepository $AdminRepository)
     {
         parent::__construct();
-        $this->productRepository = $productRepository;
-        $this->pageTitle = 'product';
+        $this->AdminRepository = $AdminRepository;
+        $this->pageTitle = 'seller';
         $this->breadcrumbs[route('admin.dashboard')] = ['icon' => 'fa fa-fw fa-home', 'title' => 'Dashboard'];
-        $this->breadcrumbs[route('admin.product.index')] = ['icon' => 'fa fa-fw fa-home', 'title' => 'product'];
+        $this->breadcrumbs[route('admin.seller.index')] = ['icon' => 'fa fa-fw fa-home', 'title' => 'seller'];
     }
     /**
      * Display a listing of the resource.
@@ -31,8 +28,8 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            return view('admin.product.index', [
-                'product' => $this->productRepository->all(),
+            return view('admin.seller.index', [
+                'seller' => $this->AdminRepository->all(),
             ]);
         } catch (Exception $exception) {
             return redirect()->back()->with('error', $exception->getMessage());
@@ -68,20 +65,19 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = $this->productRepository->get($id);
+        $seller = $this->AdminRepository->get($id);
 
-        if ($product->status == 1) {
+        if ($seller->status == 1) {
 
             $data['status'] = 0;
-            $message = 'Product De-activated Successfully';
+            $message = 'seller De-activated Successfully';
         } else {
 
             $data['status'] = 1;
-            $message = 'Product Activated Successfully';
+            $message = 'seller Activated Successfully';
         }
-        $this->productRepository->save($data, $id);
-        return redirect(route('admin.product.index'))->with('success', $message);
-
+        $this->AdminRepository->save($data, $id);
+        return redirect(route('admin.seller.index'))->with('success', $message);
 
     }
 
@@ -93,13 +89,13 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $this->pageHeading = (($id == 0) ? 'Add product' : 'Edit product');
+        $this->pageHeading = (($id == 0) ? 'Add seller' : 'Edit seller');
         $this->breadcrumbs['javascript:{};'] = ['icon' => 'fa fa-fw fa-money', 'title' => $this->pageHeading];
         try {
-            return view('admin.product.form', [
-                'product' => $this->productRepository->get($id),
+            return view('admin.seller.form', [
+                'seller' => $this->AdminRepository->get($id),
 
-                'action' => route('admin.product.update', $id),
+                'action' => route('admin.seller.update', $id),
             ]);
         } catch (Exception $exception) {
             return redirect()->route('admin.dashboard')->with('error', $exception->getMessage());
@@ -109,24 +105,21 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param productRequest $request
+     * @param sellerRequest $request
      * @param int $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
      */
-    public function update(Request $productRequest, $id)
+    public function update(Request $sellerRequest, $id)
     {
-
-        $data = $productRequest->except('_token', '_method');
-        $data['created_by']=auth()->user()->id;
-        // dd($productRequest);
-        if ((isset($data['img']))) {
-            $data['img'] = $this->saveImage($data['img'], $data['img']);
+        $data = $sellerRequest->except('_token');
+        if(isset($data['password'])){
+            $data['password']=Hash::make($data['password']);
         }
-        unset($data['image']);
-        $this->productRepository->save($data, $id);
+
         try {
-            $message = $id > 0 ? 'product Updated Successfully' : 'product Added Successfully';
-            return redirect(route('admin.product.index'))->with('success', $message);
+            $this->AdminRepository->save($data, $id);
+            $message = $id > 0 ? 'seller Updated Successfully' : 'seller Added Successfully';
+            return redirect(route('admin.seller.index'))->with('success', $message);
         } catch (Exception $exception) {
             return redirect()->back()->with('error', $exception->getMessage());
         }
@@ -141,48 +134,31 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
-            $this->productRepository->destroy($id);
+            $this->AdminRepository->destroy($id);
             $data = $this->all();
-            return response()->json(['msg' => 'product deleted successfully.', 'data' => $data]);
+            return response()->json(['msg' => 'seller deleted successfully.', 'data' => $data]);
         } catch (Exception $exception) {
-            return response()->json(['msg' => 'product Not Found.']);
+            return response()->json(['msg' => 'seller Not Found.']);
         }
     }
 
     private function all(): string
     {
-        $product = $this->productRepository->all();
+        $seller = $this->AdminRepository->all();
         $data = '<table id="dataTable" class="table table-striped" style="width:100%"><thead><tr><th>Sr#</th><th>Name</th><th>Guard Name</th><th>Created At</th><th>Updated At</th><th>Action</th></tr></thead><tbody>';
-        if (count($product) > 0) {
-            foreach ($product as $key => $val) {
+        if (count($seller) > 0) {
+            foreach ($seller as $key => $val) {
                 $data .= '<tr><td class="width-10">' . ($key + 1) . '</td>';
                 $data .= '<td class="width-20">' . $val->name . '</td>';
                 $data .= '<td class="width-20">' . $val->guard_name . '</td>';
                 $data .= '<td class="width-15">' . $val->created_at . '</td>';
                 $data .= '<td class="width-15">' . $val->updated_at . '</td>';
-                $data .= '<td class="width-20"><a href="' . route('admin.product.edit', $val->id) . '" title="Edit"><i class="fa fa-edit"></i></a> <a href="javascript:{};" data-url="' . route('admin.product.destroy', $val->id) . '" title="Delete" class="delete"><i class="fa fa-trash"></i></a></td></tr>';
+                $data .= '<td class="width-20"><a href="' . route('admin.seller.edit', $val->id) . '" title="Edit"><i class="fa fa-edit"></i></a> <a href="javascript:{};" data-url="' . route('admin.seller.destroy', $val->id) . '" title="Delete" class="delete"><i class="fa fa-trash"></i></a></td></tr>';
             }
         } else {
             $data .= '<tr><td colspan="6">No Record Found.</td></tr>';
         }
         $data .= '</tbody><tfoot><tr><th>Sr#</th><th>Name</th><th>Guard Name</th><th>Created At</th><th>Updated At</th><th>Action</th></tr></tfoot></table>';
         return $data;
-    }
-    public function saveImage($image, $img)
-    {
-        $ext = $image->getClientOriginalExtension();
-        $ext = strtolower($ext);
-        if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'png' || $ext == 'svg' || $ext == 'webp') {
-            if (!is_null($img)) {
-                $path = public_path($img);
-                if (is_file($path)) {
-                    unlink($path);
-                }
-            }
-            $path = 'assets/front/uploads/';
-            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
-            $i = $image->move($path, $profileImage);
-            return $path . $profileImage;
-        }
     }
 }

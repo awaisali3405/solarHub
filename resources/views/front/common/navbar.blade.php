@@ -130,6 +130,7 @@
                             </li> --}}
                             {{-- <li><a href="404.html">404</a></li> --}}
                             <li><a href="{{ route('front.contactUs') }}">Contact</a></li>
+                            <li><a href="{{ route('front.calculate.index') }}">Calculate Watt</a></li>
                         </ul>
                     </div>
                 </div>

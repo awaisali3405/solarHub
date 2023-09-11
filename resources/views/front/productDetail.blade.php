@@ -142,9 +142,11 @@
                                 <!--/product-information-->
                                 <h2>{{ $product->name }}</h2>
                                 {{-- <p>Product ID</p> --}}
-                                <img src="images/product-details/rating.png" alt="" />
+                                @for ($i = 0; $i < $product->avgRating(); $i++)
+                                    <i class="fa fa-star"></i>
+                                @endfor
                                 <span class="" style="display: flex;">
-                                    <span>Rs.{{ $value->sale_price }}</span>
+                                    <span>Rs.{{ $product->sale_price }}</span>
                                     <label>Quantity:</label>
                                     <form action="{{ route('front.product.cart.add.quantity') }}" method="POST"
                                         class="">
@@ -171,7 +173,8 @@
                             <ul class="nav nav-tabs">
                                 <li><a href="#details" data-toggle="tab">Details</a></li>
 
-                                <li class="active"><a href="#reviews" data-toggle="tab">Reviews (5)</a></li>
+                                <li class="active"><a href="#reviews" data-toggle="tab">Reviews
+                                        ({{ $product->feedback->count() }})</a></li>
                             </ul>
                         </div>
                         <div class="tab-content">
@@ -201,83 +204,34 @@
 
                             <div class="tab-pane fade active in" id="reviews">
                                 <div class="col-sm-12">
-                                    <ul>
-                                        <li><a href=""><i class="fa fa-user"></i>EUGEN</a></li>
-                                        <li><a href=""><i class="fa fa-clock-o"></i>12:41 PM</a></li>
-                                        <li><a href=""><i class="fa fa-calendar-o"></i>31 DEC 2014</a></li>
-                                    </ul>
-                                    <p></p>
-                                    <p><b>Write Your Review</b></p>
-                                    {{-- @if (Auth::check()) --}}
-                                    <form action="#">
-                                        <span>
-                                            <input type="text" name="name" placeholder="Your Name" />
-                                            <input type="email" name="email" placeholder="Email Address" />
-                                        </span>
-                                        <textarea name="message"></textarea>
-                                        <div class="form-group">
-                                            {{-- <label for="">
-                                                <b>Rating: </b>
-                                            </label> --}}
+                                    @foreach ($product->feedback as $value)
+                                        <ul>
+                                            <li><a href=""><i class="fa fa-user"></i>{{ $value->user->name }}</a>
+                                            </li>
+                                            <li><a href=""><i
+                                                        class="fa fa-clock-o"></i>{{ $value->created_at->format('h:i a') }}</a>
+                                            </li>
+                                            <li><a href=""><i
+                                                        class="fa fa-calendar-o"></i>{{ $value->created_at->toDateString() }}</a>
+                                            </li>
+                                            <li>
+                                                @for ($i = 0; $i < $value->rating; $i++)
+                                                    <i class="fa fa-star"></i>
+                                                @endfor
+                                            </li>
+                                        </ul>
+                                        <p>{{ $value->feedback }}</p>
+                                    @endforeach
 
-                                            <div class="rating d-flex">
-                                                <input value="5" name="ratting" id="star-1" type="radio" required>
-                                                <label for="star-1">
-                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
-                                                            pathLength="360"></path>
-                                                    </svg>
-                                                </label>
-                                                <input value="4" name="ratting" id="star-2" type="radio">
-                                                <label for="star-2">
-                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
-                                                            pathLength="360"></path>
-                                                    </svg>
-                                                </label>
-                                                <input value="3" name="ratting" id="star-3" type="radio">
-                                                <label for="star-3">
-                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
-                                                            pathLength="360"></path>
-                                                    </svg>
-                                                </label>
-                                                <input value="2" name="ratting" id="star-4" type="radio">
-                                                <label for="star-4">
-                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
-                                                            pathLength="360"></path>
-                                                    </svg>
-                                                </label>
-                                                <input value="1" name="ratting" id="star-5" type="radio">
-                                                <label for="star-5">
-                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
-                                                            pathLength="360"></path>
-                                                    </svg>
-                                                </label>
-                                            </div>
-                                        </div>
+                                    {{-- @endif --}}
                                 </div>
-                                {{-- <img src="{{ asset('images/product-details/rating.png') }}" alt="" /> --}}
-                                <button type="button" class="btn btn-default pull-right">
-                                    Submit
-                                </button>
-                                </form>
-                                {{-- @endif --}}
                             </div>
+
                         </div>
-
                     </div>
-                </div>
-                <!--/category-tab-->
+                    <!--/category-tab-->
 
-                {{-- <div class="recommended_items">
+                    {{-- <div class="recommended_items">
                         <!--recommended_items-->
                         <h2 class="title text-center">recommended items</h2>
 
@@ -375,10 +329,10 @@
                             </a>
                         </div>
                     </div> --}}
-                <!--/recommended_items-->
+                    <!--/recommended_items-->
 
+                </div>
             </div>
-        </div>
         </div>
     </section>
 @endsection

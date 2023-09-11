@@ -19,7 +19,7 @@ class Product extends Model
         'img',
         'stock',
         'status',
-        'description','watt'
+        'description','watt','created_by'
     ];
     public function category()
     {
@@ -37,5 +37,14 @@ class Product extends Model
     {
         return $this->hasMany(Recipe::class, 'recipe_product_id');
     }
+    public function createdBy(){
+        return $this->belongsTo(Admin::class,'created_by');
 
+    }
+    public function feedback(){
+        return $this->hasMany(Feedback::class,'product_id');
+    }
+    public function avgRating(){
+        return $this->feedback->avg('rating');
+    }
 }

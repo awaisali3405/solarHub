@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\AccessoriesController;
 use App\Http\Controllers\Admin\ContractController;
 use App\Http\Controllers\Admin\DailyExpenseController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\WorkController;
 use App\Models\DailyExpense;
 use Illuminate\Support\Facades\Route;
@@ -86,7 +87,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
                 'contract' => ContractController::class,
                 'work' => WorkController::class,
                 'chat' => \App\Http\Controllers\Admin\ChatController::class,
-                'accessories' => AccessoriesController::class
+                'accessories' => AccessoriesController::class,
+                'seller'=>SellerController::class
             ]);
         }
     );
@@ -121,8 +123,11 @@ Route::group([], function () {
         function () {
             Route::get('/calculate', [App\Http\Controllers\Front\CalculateController::class, 'index'])->name('calculate.index');
             Route::post('/calculate/watt', [App\Http\Controllers\Front\CalculateController::class, 'calculateWatt'])->name('calculate.watt');
-            Route::post('/calculate/product', [App\Http\Controllers\Front\CalculateController::class, 'suggestProduct'])->name('calculate.product');
+            Route::post('/calculate/industry/watt', [App\Http\Controllers\Front\CalculateController::class, 'calculateIndustrialWatt'])->name('calculate.industrial.watt');
+            Route::get('/calculate/product/{type}/{watt}', [App\Http\Controllers\Front\CalculateController::class, 'suggestProduct'])->name('calculate.product');
             Route::get('product', [App\Http\Controllers\Front\HomeController::class, 'showProduct'])->name('product.show');
+            Route::get('product/category/{id}', [App\Http\Controllers\Front\HomeController::class, 'categoryProduct'])->name('category.product');
+            Route::get('product/subCategory/{id}', [App\Http\Controllers\Front\HomeController::class, 'subCategoryProduct'])->name('subCategory.product');
             Route::get('home', [App\Http\Controllers\Front\HomeController::class, 'index'])->name('home');
             Route::get('show/productDetail/{id}', [App\Http\Controllers\Front\HomeController::class, 'productDetail'])->name('product.detail');
             Route::get('/contact-us', function () {
@@ -136,7 +141,8 @@ Route::group([], function () {
                     Route::get('addCart/product/{id}', [App\Http\Controllers\Front\HomeController::class, 'addCart'])->name('product.cart.add');
                     Route::get('removeCart/product/{id}', [App\Http\Controllers\Front\HomeController::class, 'removeCart'])->name('product.cart.remove');
                     Route::post('addCart/product', [App\Http\Controllers\Front\HomeController::class, 'addToCart'])->name('product.cart.addTo');
-                    Route::post('addCart/product', [App\Http\Controllers\Front\HomeController::class, 'addToCart'])->name('product.cart.add.quantity');
+                    Route::post('suggest/addCart/product', [App\Http\Controllers\Front\HomeController::class, 'suggestAddToCart'])->name('suggest.add.to.cart');
+                    Route::post('addCart/product/quantity', [App\Http\Controllers\Front\HomeController::class, 'addToCart'])->name('product.cart.add.quantity');
                     Route::get('product/order', [App\Http\Controllers\Front\HomeController::class, 'order'])->name('product.order');
                     Route::post('cart/update', [App\Http\Controllers\Front\HomeController::class, 'updateQuantity'])->name('update.quantity');
                     Route::get('feedback/{id}', [\App\Http\Controllers\Front\HomeController::class, 'productFeedback'])->name('product.feedback');

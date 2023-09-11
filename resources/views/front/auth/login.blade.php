@@ -66,6 +66,17 @@
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
+                            <select name="city_id" class="" style="margin-bottom:10px;" id="">
+                                <option value="">Enter Your City</option>
+                                @foreach ($city as $value)
+                                    <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('city_id')
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                             <input type="password" name="password" placeholder="Password" />
                             @error('password')
                                 <span class="text-danger" role="alert">

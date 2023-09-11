@@ -80,7 +80,7 @@ class SubCategoryController extends Controller
         $this->breadcrumbs['javascript:{};'] = ['icon' => 'fa fa-fw fa-money', 'title' => $this->pageHeading];
         try {
             return view('admin.subCategory.form', [
-                'subCategory' => $this->subCategoryRepository->get($id),
+                'subCategorys' => $this->subCategoryRepository->get($id),
                 'category' => Category::all(),
                 'action' => route('admin.subCategory.update', $id),
             ]);

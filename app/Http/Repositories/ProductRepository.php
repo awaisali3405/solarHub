@@ -37,7 +37,13 @@ class ProductRepository extends Repository
     public function all()
     {
         try {
-            return $this->getModel()->all();
+            if(auth()->user()->id==1){
+
+                return $this->getModel()->all();
+            }else{
+
+                return $this->getModel()->where('created_by',auth()->user()->id)->get();
+            }
         } catch (Exception $exception) {
             throw new Exception($exception->getMessage());
         }

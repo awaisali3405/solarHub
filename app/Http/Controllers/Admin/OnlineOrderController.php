@@ -25,9 +25,9 @@ class OnlineOrderController extends Controller
     public function index()
     {
         try {
-            $pending=Cart::where('order_id', '!=', null)->where('status_id',9)->get()->ToArray();
-            $completed=Cart::where('order_id', '!=', null)->where('status_id',10)->get()->ToArray();
-            $inProccess=Cart::where('order_id', '!=', null)->whereNotIn('status_id',[10,9])->get()->ToArray();
+            $pending=Cart::where('order_id', '!=', null)->where('status_id',1)->get()->ToArray();
+            $completed=Cart::where('order_id', '!=', null)->where('status_id',5)->get()->ToArray();
+            $inProccess=Cart::where('order_id', '!=', null)->where('status_id',2)->get()->ToArray();
 //            dd($pending);
             return view('admin.onlineOrder.index', [
                 'pending'=>count($pending),
@@ -70,9 +70,9 @@ class OnlineOrderController extends Controller
      */
     public function show($id)
     {
-        $pending=Cart::where('order_id', '!=', null)->where('status_id',9)->get()->ToArray();
-        $completed=Cart::where('order_id', '!=', null)->where('status_id',10)->get()->ToArray();
-        $inProccess=Cart::where('order_id', '!=', null)->whereNotIn('status_id',[10,9])->get()->ToArray();
+        $pending=Cart::where('order_id', '!=', null)->where('status_id',1)->get()->ToArray();
+        $completed=Cart::where('order_id', '!=', null)->where('status_id',5)->get()->ToArray();
+        $inProccess=Cart::where('order_id', '!=', null)->where('status_id',2)->get()->ToArray();
 //        dd($id);
         if ($id==1){
 

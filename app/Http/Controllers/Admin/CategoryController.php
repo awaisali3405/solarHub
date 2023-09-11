@@ -79,7 +79,7 @@ class CategoryController extends Controller
         $this->breadcrumbs['javascript:{};'] = ['icon' => 'fa fa-fw fa-money', 'title' => $this->pageHeading];
         try {
             return view('admin.category.form', [
-                'category' => $this->categoryRepository->get($id),
+                'categorys' => $this->categoryRepository->get($id),
 
                 'action' => route('admin.category.update', $id),
             ]);

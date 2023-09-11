@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Category;
+use App\Models\City;
 use App\Models\SubCategory;
 use App\Models\Unit;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -27,6 +28,7 @@ class Controller extends BaseController
                 'category' => Category::where('status',1)->latest()->get(),
                 'subCategory' => SubCategory::where('status',1)->latest()->get(),
                 'unit' => Unit::where('status',1)->latest()->get(),
+                'city'=>City::all()
                 // 'role' => session()->get('ADMIN')['role'],
             ]);
         });

@@ -32,4 +32,7 @@ class Cart extends Model
     {
         return $this->belongsTo(OrderStatus::class, 'status_id');
     }
+    public function feedback(){
+        return $this->hasOne(Feedback::class,'order_id');
+    }
 }

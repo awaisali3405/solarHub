@@ -23,7 +23,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'phone_number',
-        'img'
+        'img',
+        'city_id'
     ];
 
     /**
@@ -67,5 +68,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function order(){
         return $this->hasMany(OOrder::class,'customer_id');
     }
-
+    public function city(){
+        return $this->belongsTo(City::class,'city_id');
+    }
 }
